@@ -1,0 +1,3 @@
+[submodule "tweetdrop"]
+	path = tweetdrop
+	url = https://github.com/Anish-Agnihotri/tweetdrop
