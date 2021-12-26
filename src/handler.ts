@@ -1,24 +1,40 @@
-import Scraper from "../tweetdrop/src/scraper"; // Scraper
-import { logger } from "./tweetdrop/src/logger"; // Logging
+import Scraper from "./scraper"; // Scraper
+import { logger } from "./logger"; // Logging
 
 export async function handleRequest(request: Request): Promise<Response> {
-  return new Response(`request method: ${request.method}`)
-}
-
-async function scrapeWorker(conversationId, twitterBearer, numTokens, rpcProvider){
-  // If no conversation id or twitter token provided
-  if (!conversationID || !twitterBearer) {
-    // Throw error and exit
-    logger.error("Missing required parameters, update .env");
-    process.exit(1);
+  const { pathname } = new URL(request.url);
+  if (pathname.startsWith("/scrape")) {
+  let tokens = pathname.split('/');
+  let thread = tokens[1];
+  let tokensToGive = parseInt(tokens[2]);
+  return await scrapeWorker(thread, tokensToGive);
   }
 
-  // Scrape tweets for addresses
-  const scraper = new Scraper(
-    conversationID,
-    twitterBearer,
-    numTokens,
-    rpcProvider
-  );
-  await scraper.scrape();
+  async function scrapeWorker(conversationId: string, tokensToGive: number){
+    let rpcProvider = process.env.ETH_RPC_URL;
+    let twitterBearer = process.env.TWITTER_BEARER_TOKEN || "";
+    // If no conversation id or twitter token provided
+    if (!conversationId) {
+      let json = {"status": "error", "output": "no conversation id"};
+    }
+    else {
+      // Scrape tweets for addresses
+      const scraper = new Scraper(
+        conversationId,
+        twitterBearer,
+        numberOfTokens,
+        rpcProvider
+      );
+      let addresses = await scraper.scrape();
+      let json = {
+        status: "success",
+        output: addresses
+      }
+      return new Response(json, {
+        headers: {
+          "content-type": "application/json;charset=UTF-8"
+        }
+      })
+    }
+  }
 }
