@@ -1,6 +1,6 @@
 import { handleRequest } from './handler'
 
-addEventListener('fetch', (event) => {
+addEventListener('fetch', (event): void =>{
   event.respondWith(handleRequest(event.request))
 })
 

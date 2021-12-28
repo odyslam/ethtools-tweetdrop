@@ -10,6 +10,11 @@ module.exports = {
   mode: 'development',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      'https': 'https-browserify',
+      'http': 'http-browserify',
+      'zlib': 'zlib-browserify'
+    }
   },
   module: {
     rules: [

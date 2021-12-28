@@ -127,7 +127,7 @@ export default class Scraper {
       if (address.includes(".eth")) {
         console.log("ENS NAME: ", address);
         // Resolve name via RPC
-        const parsed: string | undefined = await this.rpc.resolveName(address) || ""
+        const parsed: string | undefined = await this.rpc?.resolveName(address) || ""
         console.log("PARSED ENS NAME: ", );
         if (parsed) {
           // If successful resolve, push name
