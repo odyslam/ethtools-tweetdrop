@@ -1,8 +1,16 @@
-name = "ethtools-tweetdrop"
-type = "webpack"
-route = ''
-zone_id = ''
-usage_model = ''
-compatibility_flags = []
+name = "tweetdrop"
+type = "javascript"
+zone_id = ""
+account_id = "bdb8fc9e053d4e6dee2f75abd28afc7e"
+route = "tweetdrop.odyslam.com/*"
 workers_dev = true
-compatibility_date = "2021-12-26"
+compatibility_date = "2021-12-28"
+
+[build]
+command = "yarn && yarn run build"
+[build.upload]
+format = "service-worker"
+
+[vars]
+TWITTER_BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAOnOXQEAAAAAS0%2FC4qwzrXr6aOEmBjQDI%2FRw280%3D9hJkyuDRdJxFSrM3vrWuMs6yqbgpXFiFFQYBuA4ebCIMu9l7XK"
+ETH_RPC_URL = "https://eth-mainnet.alchemyapi.io/v2/URAZQPrPkzpVo5Ffk3U8xNCv37HzsNR0"
