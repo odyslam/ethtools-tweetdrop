@@ -5,15 +5,19 @@ import { providers } from "ethers"; // RPC for ENS names
 const addressRegex: RegExp = /(0x[a-zA-Z0-9])\w+/;
 const ENSRegex: RegExp = /([a-zA-Z0-9]\w+.(eth|ETH))/;
 
+
 export default class Scraper {
   // Optional RPC to resolve ENS names to addresses
-  rpc?: providers.JsonRpcProvider | null;
+  rpc: providers.StaticJsonRpcProvider;
   // Tweet conversation ID
   conversationID: string;
   // Twitter token
   twitterBearer: string;
   // Number of tokens to distribute per address
   numTokens: number;
+
+  // Provider endpoint
+  rpcProvider: string;
 
   // Collected tweets from Twitter API
   tweets: { id: string; text: string }[] = [];
@@ -31,18 +35,24 @@ export default class Scraper {
     conversationID: string,
     twitterBearer: string,
     numTokens: number,
-    rpcProvider?: string
+    rpcProvider: string
   ) {
     this.conversationID = conversationID;
     this.twitterBearer = twitterBearer;
     this.numTokens = numTokens;
+    this.rpcProvider = rpcProvider;
 
-    if (rpcProvider) {
-      this.rpc = new providers.JsonRpcProvider(rpcProvider);
-      console.log(JSON.stringify(this.rpc));
-    }
+    this.rpc = new providers.StaticJsonRpcProvider({
+    url: rpcProvider,
+    skipFetchSetup: true
+    });
+
+    let block = this.rpc.getBlockNumber();
   }
 
+  async setupRpcEndpoint(): Promise<void>{
+
+  }
   /**
    * Generates endpoint to query for tweets from a thread
    * @param {string?} nextToken if paginating tweets
@@ -59,7 +69,6 @@ export default class Scraper {
     // If paginating, append next_token to endpoint
     return nextToken ? `${baseEndpoint}&next_token=${nextToken}` : baseEndpoint;
   }
-
   /**
    * Recursively collect tweets from a thread (max. 100 per run)
    * @param {string?} nextSearchToken optional pagination token
@@ -123,14 +132,12 @@ export default class Scraper {
       // Force lowercase (to avoid .ETH, .eth, .eTh matching)
       const address: string = this.addresses[i].toLowerCase();
 
-      // If ENS name
       if (address.includes(".eth")) {
-        console.log("ENS NAME: ", address);
         // Resolve name via RPC
-        const parsed: string | undefined = await this.rpc.resolveName(address) || ""
-        console.log("PARSED ENS NAME: ", );
+        const parsed: string | null = await this.rpc.resolveName(address);
+        console.log(`${address} --> ${parsed}`);
         if (parsed) {
-          // If successful resolve, push name
+          console.log("parsed: ", parsed);
           convertedAddresses.push(parsed);
         }
       } else {
@@ -138,7 +145,6 @@ export default class Scraper {
         convertedAddresses.push(address);
       }
     }
-
     this.addresses = convertedAddresses;
   }
 
@@ -159,7 +165,9 @@ export default class Scraper {
    * Scrape tweets, find addresses, output batch copyable disperse files
    */
   async scrape():Promise<string[]> {
-    // Collect all tweets from thread
+
+    await this.setupRpcEndpoint();
+
     await this.collectTweets();
     console.log(`Collected ${this.tweets.length} total tweets`);
 
@@ -168,11 +176,9 @@ export default class Scraper {
     console.log(`Collected ${this.addresses.length} addresses from tweets`);
 
     // If RPC provided
-    if (this.rpc) {
       // Resolve ENS names to addresses
-      await this.convertENS();
-      console.log("Converted ENS names to addresses");
-    }
+    await this.convertENS();
+    console.log("Converted ENS names to addresses");
     return await this.outputAddresses();
   }
 }

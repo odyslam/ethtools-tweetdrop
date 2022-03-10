@@ -12,7 +12,7 @@ export async function handleRequest(request: Request): Promise<Response> {
     console.log("twitter api token: ", TWITTER_BEARER_TOKEN);
     return await scrapeWorker(thread, tokensToGive);
   }
-  return new Response("", {
+  return new Response("<html><p>Visit <b>/scrape/twitter_thread_id/tokens_per_address</b> and you will get a list you can copy to Disperse or Multisender</p></html>", {
       headers: {
         "content-type": "text/html;charset=UTF-8"
       },
@@ -37,10 +37,16 @@ export async function handleRequest(request: Request): Promise<Response> {
         rpcProvider
       );
       let addresses = await scraper.scrape();
-      json = {
-        status: "success",
-        output: addresses
-      }
+      let output: string = "";
+      addresses.forEach((address)=> {
+        output = output  + "<p>" + address + "</p>";
+      });
+      "<html>"+ output + "</html>"
+      return new Response(output, {
+        headers: {
+          "content-type": "text/html;charset=UTF-8"
+        }
+      });
     }
     json = JSON.stringify(json, null, 2);
     return new Response(json, {

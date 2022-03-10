@@ -13,4 +13,4 @@ format = "service-worker"
 
 [vars]
 TWITTER_BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAOnOXQEAAAAAS0%2FC4qwzrXr6aOEmBjQDI%2FRw280%3D9hJkyuDRdJxFSrM3vrWuMs6yqbgpXFiFFQYBuA4ebCIMu9l7XK"
-ETH_RPC_URL = "https://eth-mainnet.alchemyapi.io/v2/4Y_wlm-04oTrBmdqATgedTJcRqwLMEW6"
+ETH_RPC_URL = "https://eth-mainnet.alchemyapi.io/v2/URAZQPrPkzpVo5Ffk3U8xNCv37HzsNR0"

@@ -13,7 +13,7 @@
   "dependencies": {
     "assert": "^2.0.0",
     "axios": "^0.21.1",
-    "ethers": "^5.4.5",
+    "ethers": "^5.6.0",
     "fs": "^0.0.1-security",
     "http-browserify": "^1.7.0",
     "https-browserify": "^1.0.0",
