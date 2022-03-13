@@ -156,7 +156,12 @@ export default class Scraper {
     let formated_string: string[] = [];
     // Create /output folder if it doesnt exist
     for (let i = 0; i < this.addresses.length; i++) {
-        formated_string[i] = `${this.addresses[i]}, ${this.numTokens}`;
+        if (isNaN(this.numTokens)) {
+          formated_string[i] = `${this.addresses[i]}`;
+        }
+        else {
+          formated_string[i] = `${this.addresses[i]}, ${this.numTokens}`;
+        }
     }
     return formated_string;
   }
